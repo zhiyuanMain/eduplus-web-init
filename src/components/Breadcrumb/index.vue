@@ -40,7 +40,6 @@ export default {
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
     pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
       const { params } = this.$route
       var toPath = pathToRegexp.compile(path)
       return toPath(params)

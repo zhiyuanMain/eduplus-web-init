@@ -1,0 +1,121 @@
+.
+├── README.md
+├── build
+│   ├── build.js
+│   ├── check-versions.js
+│   ├── logo.png
+│   ├── utils.js
+│   ├── vue-loader.conf.js
+│   ├── webpack.base.conf.js
+│   ├── webpack.dev.conf.js
+│   └── webpack.prod.conf.js
+├── config
+│   ├── dev.env.js
+│   ├── index.js
+│   └── prod.env.js
+├── favicon.ico
+├── index.html
+├── mock
+│   ├── index.js
+│   ├── table.js
+│   ├── user.js
+│   └── utils.js
+├── package-lock.json
+├── package.json
+├── src
+│   ├── App.vue
+│   ├── api
+│   │   ├── login.js
+│   │   └── table.js
+│   ├── assets
+│   │   └── 404_images
+│   │       ├── 404.png
+│   │       └── 404_cloud.png
+│   ├── components
+│   │   ├── Breadcrumb
+│   │   │   └── index.vue
+│   │   ├── Hamburger
+│   │   │   └── index.vue
+│   │   ├── SvgIcon
+│   │   │   └── index.vue
+│   │   └── index.js
+│   ├── icons
+│   │   ├── index.js
+│   │   ├── svg
+│   │   │   ├── example.svg
+│   │   │   ├── eye-open.svg
+│   │   │   ├── eye.svg
+│   │   │   ├── form.svg
+│   │   │   ├── link.svg
+│   │   │   ├── nested.svg
+│   │   │   ├── password.svg
+│   │   │   ├── table.svg
+│   │   │   ├── tree.svg
+│   │   │   └── user.svg
+│   │   └── svgo.yml
+│   ├── main.js
+│   ├── permission.js
+│   ├── router
+│   │   └── index.js
+│   ├── store
+│   │   ├── getters.js
+│   │   ├── index.js
+│   │   └── modules
+│   │       ├── app.js
+│   │       └── user.js
+│   ├── styles
+│   │   ├── element-ui.scss
+│   │   ├── index.scss
+│   │   ├── mixin.scss
+│   │   ├── sidebar.scss
+│   │   ├── transition.scss
+│   │   └── variables.scss
+│   ├── utils
+│   │   ├── auth.js
+│   │   ├── index.js
+│   │   ├── request.js
+│   │   └── validate.js
+│   └── views
+│       ├── 404.vue
+│       ├── dashboard
+│       │   └── index.vue
+│       ├── form
+│       │   └── index.vue
+│       ├── layout
+│       │   ├── Layout.vue
+│       │   ├── components
+│       │   │   ├── AppMain.vue
+│       │   │   ├── Navbar.vue
+│       │   │   ├── Sidebar
+│       │   │   │   ├── Item.vue
+│       │   │   │   ├── Link.vue
+│       │   │   │   ├── SidebarItem.vue
+│       │   │   │   └── index.vue
+│       │   │   └── index.js
+│       │   └── mixin
+│       │       └── ResizeHandler.js
+│       ├── login
+│       │   └── index.vue
+│       ├── nested
+│       │   ├── menu1
+│       │   │   ├── index.vue
+│       │   │   ├── menu1-1
+│       │   │   │   └── index.vue
+│       │   │   ├── menu1-2
+│       │   │   │   ├── index.vue
+│       │   │   │   ├── menu1-2-1
+│       │   │   │   │   └── index.vue
+│       │   │   │   └── menu1-2-2
+│       │   │   │       └── index.vue
+│       │   │   └── menu1-3
+│       │   │       └── index.vue
+│       │   └── menu2
+│       │       └── index.vue
+│       ├── table
+│       │   └── index.vue
+│       └── tree
+│           └── index.vue
+├── static
+└── tree.txt
+
+37 directories, 81 files

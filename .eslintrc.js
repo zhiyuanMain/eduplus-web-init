@@ -185,7 +185,7 @@ module.exports = {
       2,
       {
         vars: 'all',
-        args: 'none'
+        args: 'after-used'
       }
     ],
     'no-useless-call': 2,

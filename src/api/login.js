@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 export function login(username, password) {
+  debugger
   return request({
     url: '/user/login',
     method: 'post',

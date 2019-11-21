@@ -95,7 +95,9 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      // 测试unused var
+
+      this.$refs.loginForm.validate((valid, b) => {
         if (valid) {
           this.loading = true
           this.$store

@@ -1,19 +1,54 @@
 # eduplus-web-init
 eduplus-web
 
-# 关于javascript
+
+# 关于webpack
+
+### 1. 由于vue-cli3的集成度过高，对vue-cli版本进行了降级处理（3->2），目的是为了更加灵活地配置打包选项，且vue-cli2已经被大部分公司使用了很长时间，各种相关资料和异常处理的解决方案较多。另外一个目的可以锻炼团队成员对于webpack的应用，逐步摆脱cli，根据实际需要配置出符合业务要求的工程架构，进而形成独具特色的符合各个业务线的cm-cli。
+
+### 2. 内置dev、test、hd、production环境变量，可以根据运行指令制定当前的运行环境
+```c
+    npm run dev
+    npm run dev:build
+    npm run tst // test指令被单元测试占用
+    npm run tst:build
+    npm run hd
+    npm run hd:build
+    npm run build
+```
+后期可以结合CI或者Jenkins进行在线打包，避免每次在本地打出dist包手动发布。（能交给程序做的东西，坚决不手动操作。）
+
+### 3. 后期可以加上sentry的相关配置，做到前端的告警监听服务。
+
+# 关于ES的命名与规范
 
 ### 9012年了，就不要使用ES6之前的版本了，本项目babel预编译支持ES6+版本的使用
 
-# 关于命名规范
-### 1. *.js和js变量名采用语义化的驼峰命名法（Camel-Case），原则上不超过三个单词，杜绝Chinglish和拼音！
+### 1. ES的提交规范
+
+结合webpack、eslint、git pre-commit集成了本项目的自动化提交预检查。
+使用了严格的eslint规则，在git precommit时会对代码进行检查，统一代码风格。 [eslint文档](https://eslint.bootcss.com/docs/rules/)
+
+解决：
+* debugger代码忘记删除
+* unused vars过多，造成code review阅读不方便
+* ide对于代码的格式化方式千奇百怪，代码结构不清晰
+* 过多无用代码，如：console.log()大量存在，代码融于过多
+* 可以帮助团队成员养成良好的代码书写习惯和统一的风格
+
+### 2. ES变量的命名规范
+
+命名相关：
+* 建议不要使用含有广告、政治相关的单词，避免引起不必要的麻烦。如：advertisement等
+
+##### 1. *.js和js变量名采用语义化的驼峰命名法（CamelCase），原则上不超过三个单词，杜绝Chinglish和拼音！
 |说明|举例|why|
 |---------------|:--------------:|--------------|
 |Recommend|currentValue, exactPath|符合语义化|
 |Forbidden|nowValue|Chinglish|
 |Forbidden|yonghuming|拼音|
 
-### 3. *.vue文件采用帕斯卡命名法（Pascal），但是为了遵守vue的开发规则，在`<template />`中需要自行转变为短横线命名
+##### 2. *.vue文件采用帕斯卡命名法（Pascal），但是为了遵守vue的开发规则，在`<template />`中需要自行转变为短横线命名
 
 BreadcrumbItem.vue
 ```c
@@ -37,7 +72,74 @@ Breadcrumb.vue
 </script>
 ```
 
-### 2. css命名规范，遵守BEM规则，具体参照[BEM规范入门](https://www.jianshu.com/p/5e018c7f0bc6)，Block层级尽量不要超过三层
+### 3. TO DO
+
+# css规范
+### 1. css属性书写顺序
+
+建议遵循:
+布局定位属性-->自身属性-->文本属性-->其他属性. 此条可根据自身习惯书写, 但尽量保证同类属性写在一起. 属性列举: 布局定位属性主要包括: margin、padding、float（包括clear）、position（相应的 top,right,bottom,left）、display、visibility、overflow等；自身属性主要包括: width & height & background & border; 文本属性主要包括：font、color、text-align、text-decoration、text-indent等；其他属性包括: list-style(列表样式)、vertical-vlign、cursor、z-index(层叠顺序) 、zoom等.
+```c
+.container {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    border: 1px solid red;
+    background: green;
+    text-align: center;
+    color: #000;
+    z-inde: 1;
+}
+```
+* 不要使用非语义化的单词，如：.w20 {width: 20px;}，可以使用hack的方式对当前元素进行重新定义
+* 尽量避免.container一撸到底的情况，因为很容易造成css的覆盖。
+* 尽量在每个组件内内置一个prefixCls，虽然这样做在前期的时候写<tempalte />中的内容很不爽，例如:
+
+Breadcrumb.vue
+```c
+<template>
+    <div :class=`${prefixCls}`>
+        <header :class=`${prefixCls}__header`></header>
+        <main :class=`${prefixCls}__content`></main>
+        <footer :class=`${prefixCls}__footer`></footer>
+    </div>
+</template>
+<script>
+    export default {
+        data() {
+            prefixCls: 'cm-breadcrumb'
+        }
+    }
+</script>
+<style lang="scss" scoped>
+    .cm-breadcrumb {
+        &__header {
+
+        }
+        &__content {
+
+        }
+        &__footer {
+
+        }
+    }
+</style>
+```
+
+`BUT！！！`当我们需要改组件的命名（产品要求，代码冲突，或者是后期觉得需要改一下命名xjj-breadcrumb），我们不需要到<tempalte />中一个一个进行修改，有的同学说可以用ied的raplaeAll的功能，但是你怕不怕js里边一堆cm-breadcrumb？我们这个时候只用修改一下
+```c
+export default {
+    data() {
+        prefixCls: 'xjj-breadcrumb'
+    }
+}
+```
+css相关的东西就搞定了！（有兴趣可以看一下ant-design的实现方式，react props和less结合的经典方案）。
+
+### 2. css分层规范，遵守BEM规则，具体参照[BEM规范入门](https://www.jianshu.com/p/5e018c7f0bc6)，Block层级尽量不要超过三层
 
 html
 ```c
@@ -78,15 +180,14 @@ sass
 }
 
 ```
-### 3. TO DO
 
-# 关于eslint
-使用了严格的eslint规则，在git precommit时会对代码风格进行检查 [eslint文档](https://eslint.bootcss.com/docs/rules/)
+大部分Front End Engineer `痛恨`css，但是写一手优美的css又是一个FE Developer的基本功，况且`兼容ie的艰难岁月`基本上已经成为过去，我们更加需要从细节严格要求自己。
 
-### 1. TO DO 上传前端开发规范文档
+
 
 # 关于components
-1.项目级components，你应该在src/components目录下新建你的组件目录, 然后在src的入口文件index.js将你的组件export出去，这样是为了避免引用组件的地方出现多个`import A from '@/componetns/`
+
+### 1.项目级components，你应该在src/components目录下新建你的组件目录, 然后在src的入口文件index.js将你的组件export出去，这样是为了避免引用组件的地方出现多个`import A from '@/componetns/`
 
 ```c
 ├── src
@@ -120,7 +221,8 @@ import { Breadcrumb, Hamburger } from ‘@/components'
 import Breadcrumb from ‘@/components/Breadcrumb'
 import Hamburger from ‘@/components/Hamburger'
 ```
-### 2. TO DO
+
+### 2.需要把每个自定义组件都挂在vm.prototype上吗？个人觉得没有必要，因为大部分的解决方案只是将：elementUI、axios、vue-router、vuex四个挂载到原型链上，我们的自定义组件有很大一部分是`Business Components`，完全可以通过import方法引入，做到`灵活配置，有迹可循`，也可以避免vm原型链挂载对象过多导致的不可预测的问题。
 
 # 关于业务页面views的创建规则（需要讨论实际业务以便调整架构）
 ### TODO
@@ -146,7 +248,7 @@ import Hamburger from ‘@/components/Hamburger'
 
 ### 1. 通用函数
 ### 2. 构造函数
-### 3. HOC
+### 3. HOC（mixins）
 ### 4. TODO
 
 # 关于storybook，为了遵循DRY规则
@@ -154,5 +256,9 @@ import Hamburger from ‘@/components/Hamburger'
 ### 2. note、knobs、markdown的补充
 ### 3. TODO
 
-# others 
-### TODO
+# 关于code review 
+
+遵循code review的流程，会有阵痛，存在开发与deadline的冲突，但是虽然机器可以很容易阅读我们的代码，更重要的是团队其他成员可以快速理解团队当前的业务方向，大家相互吸收优秀的代码、设计思想、开发理念。`code review不是求赞、更不是批判，而是我们本着认真负责的态度为团队健康发展所做的一份贡献。`从长远看，code review坚持下去一定会提升团队和个人的水平。
+
+# 写在最后
+一套开发规范，并不是无端增加大家的工作量，而是为了团队稳定、健康、高效、持续地产出做铺垫。可能在前期的接受过程中会有痛苦、抱怨，但是当机制成熟后，我们写代码、阅读自己以前的代码、阅读别人的代码时速度都会有可观的提升，会大大节省阅读代码、培训新人的成本。真香定律永远适用在一个有纪律讲规则的团队。

@@ -42,7 +42,7 @@ export default {
   },
   mounted() {
     /* eslint-disable */
-    console.log(this)
+    // console.log(this)
   }
 }
 </script>

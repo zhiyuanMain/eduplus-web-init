@@ -15,14 +15,21 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, createNamespacedHelpers } from 'vuex'
+
+// createNamespacedHelpers: 不能使用mapGetters
+const { mapState: mapTState } = createNamespacedHelpers('app')
+
 import variables from '@/styles/variables.scss'
 import SidebarItem from './SidebarItem'
 
 export default {
   components: { SidebarItem },
   computed: {
-    ...mapGetters(['sidebar']),
+    ...mapGetters(['sidebar', 'app/testGetters']),
+    ...mapTState({
+      testHelloWorld: state => state.device
+    }),
     routes() {
       return this.$router.options.routes
     },
@@ -32,6 +39,10 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  mounted() {
+    /* eslint-disable */
+    console.log(this)
   }
 }
 </script>

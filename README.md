@@ -22,7 +22,7 @@ eduplus-web
 
 # 关于ES的命名与规范
 
-### 9012年了，就不要使用ES6之前的版本了，本项目babel预编译支持ES6+版本的使用
+### 9012年了，即使不用TypeScript，也不要使用ES6之前的版本了，本项目babel预编译支持ES6+版本的使用。
 
 ### 1. ES的提交规范
 
@@ -33,7 +33,7 @@ eduplus-web
 * debugger代码忘记删除
 * unused vars过多，造成code review阅读不方便
 * ide对于代码的格式化方式千奇百怪，代码结构不清晰
-* 过多无用代码，如：console.log()大量存在，代码融于过多
+* 过多无用代码，如：console.log()大量存在，代码冗余过多
 * 可以帮助团队成员养成良好的代码书写习惯和统一的风格
 
 ### 2. ES变量的命名规范
@@ -229,18 +229,106 @@ import Hamburger from ‘@/components/Hamburger'
 
 # 关于store（vuex）的使用[https://vuex.vuejs.org/zh/installation.html](https://vuex.vuejs.org/zh/installation.html)
 
-### 1. localStorage sessionStorage与state的关系，保证`数据源的CRUD只在一个地方被操作`,目的：项目的根数据源只在内存中存在一份
-### 2. module分层
-### 3. mapGetters的使用
+### 1. localStorage、sessionStorage与state的关系，保证`数据源的CRUD只在一个地方被操作`,目的：项目的根数据源只在内存中存在一份，避免多处xStorage的set、get导致数据源丢失、错乱的问题。
+
+### 2. module分层--state
+原则：
+1. app级：全屏、sidebar等
+2. userInfo级：user相关信息、消息等
+3. theme级：主题颜色
+4. i18n级：多语言
+5. workflow级：业务页面的流程
+
+### 3. module分层--getters
+原则：将常用的全局变量暴露在store的getters上，避免每次取值的层级较深，注意这个getters在精不在多。
+```c
+const getters = {
+  sidebar: state => state.app.sidebar,
+  device: state => state.app.device,
+  token: state => state.user.token,
+  avatar: state => state.user.avatar,
+  name: state => state.user.name,
+  roles: state => state.user.roles
+}
+export default getters
+```
+### 4. module分层--取值（mapState、mapGetters、mapMutations, mapActions, createNamespacedHelpers）
+每个module进行命名空间的处理
+```c
+// 声明
+const app = {
+  namespaced: true,
+  state: {
+    sidebar: {
+      opened: !+Cookies.get('sidebarStatus'),
+      withoutAnimation: false
+    },
+    device: 'desktop'
+  },
+  ...
+}
+// 获取
+<template>
+  <el-scrollbar wrap-class="scrollbar-wrapper">
+    <el-menu
+      :default-active="$route.path"
+      :collapse="isCollapse"
+      :background-color="variables.menuBg"
+      :text-color="variables.menuText"
+      :active-text-color="variables.menuActiveText"
+      :collapse-transition="false"
+      mode="vertical"
+    >
+      <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+    </el-menu>
+  </el-scrollbar>
+</template>
+
+<script>
+import { mapGetters, createNamespacedHelpers } from 'vuex'
+
+// createNamespacedHelpers: 不能使用mapGetters
+const { mapState: mapTState } = createNamespacedHelpers('app')
+
+import variables from '@/styles/variables.scss'
+import SidebarItem from './SidebarItem'
+
+export default {
+  components: { SidebarItem },
+  computed: {
+    ...mapGetters(['sidebar', 'app/testGetters']),
+    ...mapTState({
+      testHelloWorld: state => state.device
+    }),
+    routes() {
+      return this.$router.options.routes
+    },
+    variables() {
+      return variables
+    },
+    isCollapse() {
+      return !this.sidebar.opened
+    }
+  },
+  mounted() {
+    console.log(this)
+  }
+}
+</script>
+
+```
+
 ### 4. 同步（Mutation）、异步（Action）的界限问题
-### 5. TODO
+原则：所有的state写入都要使用Mutation，包括Action和业务页面的methods写入state。
+### 5. 同步（Mutation）的常量设置
+最好维护一个constant的文件夹，对常量进行统一管理。
 
 # 关于axios的使用
 
 ### 1. 请求前后统一拦截器
 ### 2. 请求方式 GET POST PUT DELETE
 ### 3. 请求格式 QueryString、Request Payload、FormData
-### 4. http request uri的存放与维护
+### 4. http request uri的存放与维护（src/api文件夹统一存放api配置选项）
 ### 5. TODO
 
 
@@ -251,14 +339,23 @@ import Hamburger from ‘@/components/Hamburger'
 ### 3. HOC（mixins）
 ### 4. TODO
 
+# 关于devDependencies和dependencies包的管理
+原则：
+1. 在满足业务需要的基础上，选用稳定、普适性高、有团队维护的npm包，如：momentjs、query-string等。
+2. 如有第三方包的需要，是否需要小组讨论以避免项目过于臃肿？
+
 # 关于storybook，为了遵循DRY规则
 ### 1. 通用组件的demo展示
 ### 2. note、knobs、markdown的补充
 ### 3. TODO
 
+# 关于pull request
+https://www.jianshu.com/p/2a0b3f990cd8
+
 # 关于code review 
 
 遵循code review的流程，会有阵痛，存在开发与deadline的冲突，但是虽然机器可以很容易阅读我们的代码，更重要的是团队其他成员可以快速理解团队当前的业务方向，大家相互吸收优秀的代码、设计思想、开发理念。`code review不是求赞、更不是批判，而是我们本着认真负责的态度为团队健康发展所做的一份贡献。`从长远看，code review坚持下去一定会提升团队和个人的水平。
+
 
 # 写在最后
 一套开发规范，并不是无端增加大家的工作量，而是为了团队稳定、健康、高效、持续地产出做铺垫。可能在前期的接受过程中会有痛苦、抱怨，但是当机制成熟后，我们写代码、阅读自己以前的代码、阅读别人的代码时速度都会有可观的提升，会大大节省阅读代码、培训新人的成本。真香定律永远适用在一个有纪律讲规则的团队。

@@ -2,6 +2,7 @@
   <div id="app">
     <router-view />
   </div>
+  //eduplus
 </template>
 
 <script>
